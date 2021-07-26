@@ -1,0 +1,25 @@
+.wpcf7-entries-row {
+    display: grid;
+    gap: 40px;
+    grid-template-columns: 1fr 300px;
+}
+
+@media (max-width: 782px) {
+    .wpcf7-entries-row {display: block;}     
+    .wpcf7-entries-row > * {margin-bottom: 40px;}
+}
+
+.wpcf7-entris-settings-wrap .box-widget {
+    padding: 30px 15px;
+    border: 1px solid #ccd0d4;
+    background-color: #fff;
+}
+
+.box-widget {
+    min-height: 150px;
+}
+
+.box-widget .widget-title {
+    font-size: 25px;
+    margin: 0 0 20px 0;
+}
