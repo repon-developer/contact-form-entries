@@ -2,7 +2,7 @@
 /**
  * File containing the class Contact_Form7_Entries_Admin_Settings.
  *
- * @package contact-form-7-entries
+ * @package wpcf7-entries
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.1
  */
-class Contact_Form7_Entries_Admin_Settings {
+class WPCF7_Entries_Settings {
 
 	/**
 	 * Constructor.
@@ -34,7 +34,7 @@ class Contact_Form7_Entries_Admin_Settings {
             'entries_settings_options'
         );
 
-		register_setting('wpcf7_entires_settings', 'wpcf7_entries_submission_saving');
+		register_setting('wpcf7_entries_settings', 'wpcf7_entries_submission_saving');
 
 		add_settings_field(
             'wpcf7_entries_menu_name',
@@ -44,7 +44,7 @@ class Contact_Form7_Entries_Admin_Settings {
             'entries_settings_options'
         );
 
-		register_setting('wpcf7_entires_settings', 'wpcf7_entries_field_email');
+		register_setting('wpcf7_entries_settings', 'wpcf7_entries_field_email');
 
 		add_settings_field(
             'wpcf7_entries_field_email',
@@ -54,7 +54,7 @@ class Contact_Form7_Entries_Admin_Settings {
             'entries_settings_options'
         );
 
-		register_setting('wpcf7_entires_settings', 'wpcf7_entries_field_name');
+		register_setting('wpcf7_entries_settings', 'wpcf7_entries_field_name');
 
 		add_settings_field(
             'wpcf7_entries_field_name',
@@ -64,7 +64,7 @@ class Contact_Form7_Entries_Admin_Settings {
             'entries_settings_options'
         );
 
-		register_setting('wpcf7_entires_settings', 'wpcf7_entries_field_subject');
+		register_setting('wpcf7_entries_settings', 'wpcf7_entries_field_subject');
 
 		add_settings_field(
             'wpcf7_entries_field_subject',
@@ -74,7 +74,7 @@ class Contact_Form7_Entries_Admin_Settings {
             'entries_settings_options'
         );
 
-		register_setting('wpcf7_entires_settings', 'wpcf7_entries_roles');
+		register_setting('wpcf7_entries_settings', 'wpcf7_entries_roles');
 
 		add_settings_field(
             'wpcf7_entries_roles',
@@ -128,7 +128,7 @@ class Contact_Form7_Entries_Admin_Settings {
 
 			<div class="wpcf7-entries-row">
 				<form class="wpcf7-entries-options" method="post" action="options.php">
-					<?php settings_fields( 'wpcf7_entires_settings' ); ?>
+					<?php settings_fields( 'wpcf7_entries_settings' ); ?>
 
 					<h2 class="nav-tab-wrapper">
 						<a href="#settings-options" class="nav-tab"><?php _e('Settings', 'wpcf7-entries') ?></a>
@@ -161,6 +161,7 @@ class Contact_Form7_Entries_Admin_Settings {
 				</form>
 
 				<div class="sidebar">
+
 					<div class="box-widget">
 						<h3 class="widget-title"><?php _e('Contacts', 'wpcf7-entries'); ?></h3>
 						<p><strong><?php _e('Help & Resource', 'wpcf7-entries'); ?></strong></p>

@@ -2,7 +2,7 @@
 /**
  * File containing the class Contact_Form7_Entries.
  *
- * @package contact-form-7-entries
+ * @package wpcf7-entries
  * @since   1.0.1
  */
 
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.1
  */
-class Contact_Form7_Entries {
+class WPCF7_Entries {
 	/**
 	 * The single instance of the class.
 	 *
@@ -44,7 +44,7 @@ class Contact_Form7_Entries {
 	public function __construct() {
 		// Includes.
 		if ( is_admin() ) {
-			require_once WPCF7_ENTRIES_PLUGIN_DIR . '/includes/class-contact-form7-entries-admin.php';
+			require_once WPCF7_ENTRIES_PLUGIN_DIR . '/includes/class-wpcf7-entries-admin.php';
 		}
 
 		// Actions.
@@ -59,7 +59,7 @@ class Contact_Form7_Entries {
 
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . 'contact_form7_entries';
+		$table_name = $wpdb->prefix . 'wpcf7_entries';
 
 		maybe_create_table($table_name, "CREATE TABLE $table_name (
 			`ID` INT NOT NULL AUTO_INCREMENT , 
