@@ -16,7 +16,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 
 class WPCF7_Entries_Table extends WP_List_Table {
-
+    /**
+     * set bulk action for table
+     * @since 1.0.1
+     */
     public function get_bulk_actions() {
         $actions = [
             'bulk-delete' => __('Delete', 'wpcf7-entries')
@@ -24,7 +27,11 @@ class WPCF7_Entries_Table extends WP_List_Table {
 
         return $actions;
     }
-    
+
+    /**
+     * handle bulk action for table
+     * @since 1.0.1
+     */    
     public function process_bulk_action() {        
         if (!wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-' . $this->_args['plural'] ) ) {
             return;
@@ -38,6 +45,10 @@ class WPCF7_Entries_Table extends WP_List_Table {
         }
     }
 
+    /**
+     * add export button at top
+     * @since 1.0.1
+     */
     function extra_tablenav( $which ) {
         if ( 'top' !== $which ) {
             return;
@@ -51,8 +62,20 @@ class WPCF7_Entries_Table extends WP_List_Table {
     }
 
     /**
+     * Sortable columns
+     * @since 1.0.1
+     */
+    public function get_sortable_columns() {
+        return array(
+            'email' => array('email', false),
+            'name' => array('name', false),
+            'submitted_date' => array('submitted_date', false),
+        );
+    } 
+
+    /**
      * Prepare the items for the table to process
-     *
+     * @since 1.0.1
      * @return Void
      */
     public function prepare_items() {
@@ -71,7 +94,13 @@ class WPCF7_Entries_Table extends WP_List_Table {
             $sql .= 'AND name LIKE "%'. trim($_REQUEST['s']).'%"';
         }
 
-        $sql .= $wpdb->prepare(" ORDER BY ID DESC LIMIT %d, %d", $offset, $per_page);
+        $orderby = "ID DESC";
+        if ( !empty($_GET['orderby']) ) {
+            $orderby = sprintf("%s %s", $_GET['orderby'], strtoupper($_GET['order']));
+        }
+
+        $sql .= sprintf(" ORDER BY %s LIMIT %d, %d", $orderby, $offset, $per_page);
+
         $entries = $wpdb->get_results($sql);
 
         $this->set_pagination_args( array(
@@ -79,14 +108,14 @@ class WPCF7_Entries_Table extends WP_List_Table {
             'per_page'    => $per_page
         ) );
 
-        $this->_column_headers = array($columns);
+        $sortable = $this->get_sortable_columns(); 
+        $this->_column_headers = array($columns, [], $sortable);
         $this->items = $entries;
     }
 
     /**
      * Override the parent columns method. Defines the columns to use in your listing table
-     *
-     * @return Array
+     * @since 1.0.1
      */
     public function get_columns() {
         $columns = array(
@@ -102,11 +131,9 @@ class WPCF7_Entries_Table extends WP_List_Table {
 
     /**
      * Define what data to show on each column of the table
-     *
-     * @param  Array $item        Data
+     * @param  Object $entry        Data
      * @param  String $column_name - Current column name
-     *
-     * @return Mixed
+     * @since 1.0.1
      */
     public function column_default( $entry, $column_name ) {
         switch( $column_name ) {
@@ -125,9 +152,11 @@ class WPCF7_Entries_Table extends WP_List_Table {
         }
     }
 
+    /**
+     * checkbox column 
+     * @since 1.0.1
+     */
     function column_cb( $form ) {
         return sprintf('<input type="checkbox" name="entries[]" value="%s" />', $form->ID);
-    }
-
-    
+    }    
 }
