@@ -97,7 +97,7 @@ class WPCF7_Entries_Entry {
 		$entry_id = $this->entry_id;
 		$submitted_date = $this->submitted_date;
 
-		$entry_fields = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}wpcf7_entries_fields WHERE entry_id = " . $this->entry_id);
+		$entry_fields = $wpdb->get_results(sprintf("SELECT * FROM {$wpdb->prefix}wpcf7_entries_fields WHERE entry_id = %d ORDER BY ID", $this->entry_id));
 
 		foreach ($entry_fields as $field) {
 			$fields[$field->field_id] = $field->value;

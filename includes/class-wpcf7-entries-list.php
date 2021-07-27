@@ -20,7 +20,11 @@ class WPCF7_Entries_List  {
 	 * Constructor.
 	 */
 	public function __construct() {	
+        require_once WPCF7_ENTRIES_PLUGIN_DIR. '/includes/class-wpcf7-entries-table.php';
+		$this->entry_table = new WPCF7_Entries_Table();
+
 		add_filter( 'set-screen-option', [ __CLASS__, 'set_screen' ], 20, 3 );
+        $this->export_entries();
 	}
 
 	public static function set_screen( $status, $option, $value ) {
@@ -35,6 +39,40 @@ class WPCF7_Entries_List  {
         ] );
     }
 
+    public function export_entries() {
+        if (!wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-' . $this->_args['plural'] ) ) {
+            return;
+        }
+
+        if ( $_REQUEST['action'] != 'Export' ) {
+            return;
+        }
+
+        global $wpdb;
+
+        $result = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}wpcf7_entries WHERE form_id = " . $_GET['form']);
+        if ( !$result ) {
+            return;
+        }
+        
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="entries.csv"');
+
+        $emails = wp_list_pluck( $result, 'email');
+
+
+        $data = array(
+                'aaa,bbb,ccc,dddd',
+                '123,456,789',
+                '"aaa","bbb"'
+        );
+
+        $fp = fopen('php://output', 'wb');
+        fputcsv($fp, array( implode(',', $emails) ) );
+        fclose($fp);
+        exit;
+    }
+
     public function output() {
         $form = get_post($_GET['form']);
 
@@ -47,15 +85,14 @@ class WPCF7_Entries_List  {
             return;
         }
 
-		require_once WPCF7_ENTRIES_PLUGIN_DIR. '/includes/class-wpcf7-entries-table.php';
-		$entry_table = new WPCF7_Entries_Table();
-		$entry_table->prepare_items(); ?>
+		
+		$this->entry_table->prepare_items(); ?>
 
         <div class="wrap">
 			<h1 class="wp-heading-inline"><strong><?php echo $form->post_title ?></strong> <?php _e('Entries', 'wpcf7-entries'); ?></h1>
             <form method="post">
-                <?php //wp_nonce_field('_wpcf7_entries_action', 'wpcf7_entries_action'); ?>
-                <?php $entry_table->display(); ?>
+                <?php $this->entry_table->search_box( __( 'Search Contacts', 'wpcf7-entries' ), 'search-box-id' ); ?>
+                <?php $this->entry_table->display(); ?>
             </form>
         </div>
         <?php

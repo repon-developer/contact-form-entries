@@ -16,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 
 class WPCF7_Entries_Table extends WP_List_Table {
+
     public function get_bulk_actions() {
         $actions = [
             'bulk-delete' => __('Delete', 'wpcf7-entries')
@@ -23,9 +24,8 @@ class WPCF7_Entries_Table extends WP_List_Table {
 
         return $actions;
     }
-
     
-    public function process_bulk_action() {
+    public function process_bulk_action() {        
         if (!wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-' . $this->_args['plural'] ) ) {
             return;
         }
@@ -36,7 +36,18 @@ class WPCF7_Entries_Table extends WP_List_Table {
             $wpdb->query(sprintf("DELETE entries, entry_fields FROM {$wpdb->prefix}wpcf7_entries entries LEFT JOIN {$wpdb->prefix}wpcf7_entries_fields entry_fields ON entries.ID = entry_fields.entry_id WHERE entries.ID IN (%s)", implode(', ', $_REQUEST['entries'])));
             exit(wp_safe_redirect(admin_url('admin.php?page=wpcf7-entries&form=' . $_GET['form'])));
         }
+    }
+
+    function extra_tablenav( $which ) {
+        if ( 'top' !== $which ) {
+            return;
+        } 
         
+        ?>
+        <div class="alignleft actions">
+            <?php submit_button( __( 'Export' ), '', 'action', false); ?>
+        </div>
+        <?php
     }
 
     /**
@@ -54,7 +65,14 @@ class WPCF7_Entries_Table extends WP_List_Table {
         $per_page = $this->get_items_per_page( 'entry_per_page', 15 );
         $offset = ($per_page * ($this->get_pagenum() - 1));
 
-        $entries = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}wpcf7_entries WHERE form_id = %s LIMIT %d, %d", $_GET['form'], $offset, $per_page));
+        $sql = $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wpcf7_entries WHERE form_id = %s", $_GET['form']);
+
+        if ( !empty($_REQUEST['s']) ) {
+            $sql .= 'AND name LIKE "%'. trim($_REQUEST['s']).'%"';
+        }
+
+        $sql .= $wpdb->prepare(" ORDER BY ID DESC LIMIT %d, %d", $offset, $per_page);
+        $entries = $wpdb->get_results($sql);
 
         $this->set_pagination_args( array(
             'total_items' => $wpdb->get_var(sprintf("SELECT count(*) FROM {$wpdb->prefix}wpcf7_entries WHERE form_id = %s", $_GET['form'])),
@@ -110,4 +128,6 @@ class WPCF7_Entries_Table extends WP_List_Table {
     function column_cb( $form ) {
         return sprintf('<input type="checkbox" name="entries[]" value="%s" />', $form->ID);
     }
+
+    
 }
