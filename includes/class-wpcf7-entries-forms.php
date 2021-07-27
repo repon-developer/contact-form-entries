@@ -42,10 +42,10 @@ class WPCF7_Entries_Forms {
 		$forms->prepare_items(); ?>
 
         <div class="wrap">
-			<h1 class="wp-heading-inline"><?php _e('Form Submission', 'wpcf7-entries'); ?></h1>
+			<h1 class="wp-heading-inline"><?php _e('Form Submissions', 'wpcf7-entries'); ?></h1>
 
             <form method="post">
-                <?php wp_nonce_field('_affiliate_one_overview', 'affiliate_one_overview'); ?>
+                <?php $forms->search_box( __( 'Search Forms', 'wpcf7-entries' ), 'form' ); ?>
                 <?php $forms->display(); ?>
             </form>
         </div>

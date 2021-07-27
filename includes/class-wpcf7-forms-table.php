@@ -24,38 +24,14 @@ class WPCF7_Forms_Table extends WP_List_Table {
         return $actions;
     }
 
-    /**
-     * Prepare the items for the table to process
-     *
-     * @return Void
-     */
-    public function prepare_items() {
-        $columns = $this->get_columns();
-
-        $per_page = $this->get_items_per_page( 'form_per_page', 15 );
-
-        $contact_forms = new WP_Query([
-            'offset' => ($per_page * ($this->get_pagenum() - 1)),
-            'posts_per_page' => $per_page,
-            'post_type' => 'wpcf7_contact_form',
-        ]);
-
-        array_walk($contact_forms->posts, function(&$form){
-            $form->author = get_the_author_meta('display_name', $form->post_author);
-
-            global $wpdb;
-            $form->entries = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}wpcf7_entries WHERE form_id = $form->ID");
-        });
-
-        $this->set_pagination_args( array(
-            'total_items' => $contact_forms->found_posts,
-            'per_page'    => $per_page
-        ) );
-
-
-        $this->_column_headers = array($columns);
-        $this->items = $contact_forms->posts;
-    }
+    public function get_sortable_columns() {
+        return array(
+            'form' => array('form', false),
+            'entries' => array('entries', false),
+            'author' => array('author', false),
+            'post_date' => array('post_date', false),
+        );
+    }   
 
     /**
      * Override the parent columns method. Defines the columns to use in your listing table
@@ -101,5 +77,76 @@ class WPCF7_Forms_Table extends WP_List_Table {
 
     function column_cb( $form ) {
         return sprintf('<input type="checkbox" name="forms[]" value="%s" />', $form->id);
+    }
+
+    /**
+     * Prepare the items for the table to process
+     *
+     * @return Void
+     */
+    public function prepare_items() {
+        $sortable = $this->get_sortable_columns(); 
+        $columns = $this->get_columns();
+
+        $per_page = $this->get_items_per_page( 'form_per_page', 15 );
+
+        $query_args = [
+            'offset' => ($per_page * ($this->get_pagenum() - 1)),
+            'posts_per_page' => $per_page,
+            'post_type' => 'wpcf7_contact_form',
+        ];
+
+        if ( !empty($_REQUEST['s']) ) {
+            $query_args['s'] = $_REQUEST['s'];
+        }
+
+        if ( !empty($_GET['orderby']) && ($_GET['orderby'] == 'form' || $_GET['orderby'] == 'post_date') ) {
+            $orderby = $_GET['orderby'];
+            if ( $orderby == 'form') {
+                $orderby = 'title';
+            }
+            $query_args['orderby'] = $orderby;
+            $query_args['order'] = strtoupper($_GET['order']);
+        }
+
+        $contact_forms = new WP_Query($query_args);
+
+        array_walk($contact_forms->posts, function(&$form){
+            $form->author = get_the_author_meta('display_name', $form->post_author);
+
+            global $wpdb;
+            $form->entries = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}wpcf7_entries WHERE form_id = $form->ID");
+        });
+
+        if ( !empty($_GET['orderby'])) {
+            if ($_GET['orderby'] == 'entries') {
+                usort($contact_forms->posts, function($a, $b){
+                    if ( $_GET['order'] === 'asc') {
+                        return $a->entries - $b->entries;
+                    }
+                    return $b->entries - $a->entries;
+                });
+            }
+
+            if ($_GET['orderby'] == 'author') {
+                usort($contact_forms->posts, function($a, $b){
+
+                    if ( $_GET['order'] === 'asc') {
+                        return strcmp($a->author, $b->author);
+                    }
+
+                    return strcmp($b->author, $a->author);
+                });
+            }            
+        }
+
+        $this->set_pagination_args( array(
+            'total_items' => $contact_forms->found_posts,
+            'per_page'    => $per_page
+        ) );
+
+        $this->_column_headers = array($columns, [], $sortable);
+
+        $this->items = $contact_forms->posts;
     }
 }

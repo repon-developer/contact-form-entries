@@ -54,22 +54,19 @@ class WPCF7_Entries_List  {
         if ( !$result ) {
             return;
         }
-        
+                
         header('Content-Type: text/csv');
         header('Content-Disposition: attachment; filename="entries.csv"');
 
-        $emails = wp_list_pluck( $result, 'email');
+        $output = fopen('php://output', 'wb');
+        fputcsv($output, array('email'));
 
+        while ($row = current($result)) {
+            next($result);
+            fputcsv($output, array($row->email) );
+        }
 
-        $data = array(
-                'aaa,bbb,ccc,dddd',
-                '123,456,789',
-                '"aaa","bbb"'
-        );
-
-        $fp = fopen('php://output', 'wb');
-        fputcsv($fp, array( implode(',', $emails) ) );
-        fclose($fp);
+        fclose($output);
         exit;
     }
 
