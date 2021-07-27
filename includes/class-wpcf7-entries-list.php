@@ -9,17 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if(!class_exists('WP_List_Table')){
-    require_once( ABSPATH . 'wp-admin/includes/screen.php' );
-    require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
-}
-
 /**
  * Handles Contact Form 7 Entries.
  *
  * @since 1.0.1
  */
-class WPCF7_Entries_List extends WP_List_Table  {
+class WPCF7_Entries_List  {
 
 	/**
 	 * Constructor.
@@ -58,9 +53,8 @@ class WPCF7_Entries_List extends WP_List_Table  {
 
         <div class="wrap">
 			<h1 class="wp-heading-inline"><strong><?php echo $form->post_title ?></strong> <?php _e('Entries', 'wpcf7-entries'); ?></h1>
-
             <form method="post">
-                <?php wp_nonce_field('_affiliate_one_overview', 'affiliate_one_overview'); ?>
+                <?php //wp_nonce_field('_wpcf7_entries_action', 'wpcf7_entries_action'); ?>
                 <?php $entry_table->display(); ?>
             </form>
         </div>
