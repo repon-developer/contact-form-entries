@@ -29,6 +29,8 @@ class WPCF7_Entries_Entry {
 	 * Constructor.
 	 */
 	public function __construct() {
+		if ( empty($_GET['id'])) return;
+
 		global $wpdb;
 		
 		$entry = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}wpcf7_entries WHERE id = " . $_GET['id']);

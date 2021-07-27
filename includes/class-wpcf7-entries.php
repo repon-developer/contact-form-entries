@@ -122,11 +122,14 @@ class WPCF7_Entries {
 			'subject' => $_POST[$subject]
 		));
 
+		
 		if ( !$result ) {
 			return;
 		}
 
-		$others_fields = array_filter($_POST, function($value, $key){
+		$entry_id = $wpdb->insert_id;
+		
+		$others_fields = array_filter($_POST, function($value, $key) use($email, $name, $subject) {
 			if ( in_array($key, [$email, $name, $subject]) ) {
 				return false;
 			}
@@ -141,7 +144,7 @@ class WPCF7_Entries {
 
 		foreach ($others_fields as $key => $value) {
 			$wpdb->insert($wpdb->prefix . 'wpcf7_entries_fields', array( 
-				'entry_id' => $wpdb->insert_id,
+				'entry_id' => $entry_id,
 				'field_id' => $key, 
 				'value' => $value
 			));

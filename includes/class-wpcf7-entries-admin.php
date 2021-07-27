@@ -73,11 +73,16 @@ class WPCF7_Entries_Admin {
 	 * Adds pages to admin menu.
 	 */
 	public function admin_menu() {
+		$menu_name = get_option( 'wpcf7_entries_menu_name');		
+		if ( empty($menu_name) ) {
+			$menu_name = __( 'Contacts', 'wpcf7-entries' );
+		}
+
 		//Add top level menu page of contact form 7 entries
 		$form_list_hook = add_menu_page(
             __( 'Contacts Form 7 Forms', 'wpcf7-entries' ),
-            __( 'Contacts', 'wpcf7-entries' ),
-            'manage_options',
+            $menu_name,
+            'manage_wpcf7_entries',
             'wpcf7-entries-forms',
             array($this->form_list, 'output'),
            'dashicons-feedback',
@@ -88,7 +93,7 @@ class WPCF7_Entries_Admin {
         add_action( "load-$form_list_hook", [$this->form_list, 'screen_option' ] );	
 
 		//Add submenu page for just change the menu name from contacts for form submission
-        add_submenu_page( 'wpcf7-entries-forms', __('Contact Form 7 Entries Forms', 'wpcf7-entries'), __('Form Submission', 'wpcf7-entries'), 'manage_options', 'wpcf7-entries-forms');
+        add_submenu_page( 'wpcf7-entries-forms', __('Contact Form 7 Entries Forms', 'wpcf7-entries'), __('Form Submission', 'wpcf7-entries'), 'manage_wpcf7_entries', 'wpcf7-entries-forms');
 
 		//settings submenu page of contact form 7 entries
 		require_once WPCF7_ENTRIES_PLUGIN_DIR . '/includes/class-wpcf7-entries-settings.php';
@@ -101,7 +106,7 @@ class WPCF7_Entries_Admin {
 		$entry_list = new WPCF7_Entries_List();
 
 		//Entry List page for a contact form. Hidden page, just use for showing entry list
-		$entry_list_hook = add_submenu_page( null, __('Contact Form 7 Entries', 'wpcf7-entries'), __('Entries', 'wpcf7-entries'), 'manage_options', 'wpcf7-entries', [$entry_list, 'output']);
+		$entry_list_hook = add_submenu_page( null, __('Contact Form 7 Entries', 'wpcf7-entries'), __('Entries', 'wpcf7-entries'), 'manage_wpcf7_entries', 'wpcf7-entries', [$entry_list, 'output']);
 
 		//hook action for screen opton of entry list page
 		add_action( "load-$entry_list_hook", [$entry_list, 'screen_option' ] );	
@@ -111,7 +116,7 @@ class WPCF7_Entries_Admin {
 		$view_entry = new WPCF7_Entries_Entry();
 
 		//Add submenu page for view entry
-		add_submenu_page( null, __('View Entry', 'wpcf7-entries'), __('View Entry', 'wpcf7-entries'), 'manage_options', 'wpcf7-entry', [$view_entry, 'output']);
+		add_submenu_page( null, __('View Entry', 'wpcf7-entries'), __('View Entry', 'wpcf7-entries'), 'manage_wpcf7_entries', 'wpcf7-entry', [$view_entry, 'output']);
 	}
 
 }

@@ -20,24 +20,29 @@ class WPCF7_Entries_Settings {
 	 * Constructor.
 	 */
 	public function __construct() {	
-		add_action( 'admin_init', [$this, 'register_settings']);		
+		add_action( 'admin_init', [$this, 'register_settings']);
+		add_action( 'update_option_wpcf7_entries_roles', [$this, 'handle_roles'], 30, 2);
+		add_action( 'add_option_wpcf7_entries_roles', function($option, $value){
+			$this->handle_roles([], $value);
+		}, 20, 2);
 	}
 
 	public function register_settings() {
 		add_settings_section('entries_settings_options', '', '', 'wpcf7_entries_settings_options');
 
+		register_setting('wpcf7_entries_settings', 'wpcf7_entries_submission_saving');
 		add_settings_field(
-            'wpcf7_entries_submission_saving',
+			'wpcf7_entries_submission_saving',
             __('Submission Saving', 'wpcf7-entries'),
             array( $this, 'submission_saving' ),
             'wpcf7_entries_settings_options',
             'entries_settings_options'
         );
-
-		register_setting('wpcf7_entries_settings', 'wpcf7_entries_submission_saving');
-
+		
+		
+		register_setting('wpcf7_entries_settings', 'wpcf7_entries_menu_name');
 		add_settings_field(
-            'wpcf7_entries_menu_name',
+			'wpcf7_entries_menu_name',
             __('Menu Name', 'wpcf7-entries'),
             array( $this, 'entries_menu_name' ),
             'wpcf7_entries_settings_options',
@@ -121,6 +126,20 @@ class WPCF7_Entries_Settings {
 		echo '</ul>';
 	}
 
+	public function handle_roles($old_value, $value) {		
+		$manage_roles = array_filter((array) $value);
+		//array_push($manage_roles, 'administrator');
+
+		global $wp_roles;
+		foreach ($wp_roles->roles as $role => $value) {
+			if ( in_array($role, $manage_roles) ) {
+				get_role( $role )->add_cap('manage_wpcf7_entries');
+			} else {
+				get_role( $role )->remove_cap('manage_wpcf7_entries');
+			}
+		}
+	}
+
     public function output() {
         ?>
         <div class="wrap wpcf7-entris-settings-wrap">
@@ -129,7 +148,6 @@ class WPCF7_Entries_Settings {
 			<div class="wpcf7-entries-row">
 				<form class="wpcf7-entries-options" method="post" action="options.php">
 					<?php settings_fields( 'wpcf7_entries_settings' ); ?>
-
 					<h2 class="nav-tab-wrapper">
 						<a href="#settings-options" class="nav-tab"><?php _e('Settings', 'wpcf7-entries') ?></a>
 						<a href="#settings-about" class="nav-tab"><?php _e('About', 'wpcf7-entries') ?></a>
