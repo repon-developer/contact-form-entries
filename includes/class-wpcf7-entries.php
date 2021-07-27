@@ -49,6 +49,10 @@ class WPCF7_Entries {
 
 		// Actions.
 		add_action( 'plugins_loaded', [ $this, 'load_plugin_textdomain' ] );
+
+		//getting the response after sent email
+		add_action('wpcf7_mail_sent', [$this, 'wpcf7_save_entry']);
+		//$this->wpcf7_save_entry('');
 	}
 
 	/**
@@ -85,6 +89,64 @@ class WPCF7_Entries {
 	 * Loads textdomain for plugin.
 	 */
 	public function load_plugin_textdomain() {
-		load_plugin_textdomain( 'contact-form-7-entries', false, WPCF7_ENTRIES_PLUGIN_DIR . '/languages/' );
+		load_plugin_textdomain( 'wpcf7-entries', false, WPCF7_ENTRIES_PLUGIN_DIR . '/languages/' );
+	}
+
+	public function wpcf7_save_entry($contact_form) {
+		global $wpdb;
+
+		$submission_saving = get_option('wpcf7_entries_submission_saving', 1);
+
+		
+		if ( !$submission_saving ) {
+			return;
+		}
+
+		$email = get_option( 'wpcf7_entries_field_email', 'your-email' );
+		if (empty($email) ) {
+			$email = 'your-email';
+		}
+
+		$name = get_option( 'wpcf7_entries_field_name', 'your-name' );
+		if (empty($name) ) {
+			$name = 'your-name';
+		}
+
+		$subject = get_option( 'wpcf7_entries_field_subject', 'your-subject' );
+		if (empty($subject) ) {
+			$subject = 'your-subject';
+		}
+
+		$result = $wpdb->insert($wpdb->prefix . 'wpcf7_entries', array( 
+			'form_id' => $_POST['_wpcf7'], 
+			'email' => $_POST[$email], 
+			'name' => $_POST[$name], 
+			'subject' => $_POST[$subject]
+		));
+
+		if ( !$result ) {
+			return;
+		}
+
+		$others_fields = array_filter($_POST, function($value, $key){
+			if ( in_array($key, ['your-email', 'your-name', 'your-subject']) ) {
+				return false;
+			}
+
+			if ( strpos($key, '_wpcf7') !== false) {
+				return false;
+			}
+
+			return true;
+
+		}, ARRAY_FILTER_USE_BOTH);
+
+		foreach ($others_fields as $key => $value) {
+			$wpdb->insert($wpdb->prefix . 'wpcf7_entries_fields', array( 
+				'entry_id' => $wpdb->insert_id,
+				'field_id' => $key, 
+				'value' => $value
+			));
+		}
 	}
 }

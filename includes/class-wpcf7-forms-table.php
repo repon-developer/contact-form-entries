@@ -32,7 +32,7 @@ class WPCF7_Forms_Table extends WP_List_Table {
     public function prepare_items() {
         $columns = $this->get_columns();
 
-        $per_page = $this->get_items_per_page( 'per_page', 15 );
+        $per_page = $this->get_items_per_page( 'form_per_page', 15 );
 
         $contact_forms = new WP_Query([
             'offset' => ($per_page * ($this->get_pagenum() - 1)),

@@ -30,9 +30,9 @@ class WPCF7_Entries_Forms {
 
 	public function screen_option() {
         add_screen_option( 'per_page', [
-            'label' => __('Form Per Page', 'wpcf7-entries'),
+            'label' => __('Entry Per Page', 'wpcf7-entries'),
             'default' => 15,
-            'option' => 'per_page'
+            'option' => 'form_per_page'
         ] );
     }
 
