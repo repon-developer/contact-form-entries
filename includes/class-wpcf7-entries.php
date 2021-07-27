@@ -95,9 +95,7 @@ class WPCF7_Entries {
 	public function wpcf7_save_entry($contact_form) {
 		global $wpdb;
 
-		$submission_saving = get_option('wpcf7_entries_submission_saving', 1);
-
-		
+		$submission_saving = get_option('wpcf7_entries_submission_saving', 1);		
 		if ( !$submission_saving ) {
 			return;
 		}
@@ -129,7 +127,7 @@ class WPCF7_Entries {
 		}
 
 		$others_fields = array_filter($_POST, function($value, $key){
-			if ( in_array($key, ['your-email', 'your-name', 'your-subject']) ) {
+			if ( in_array($key, [$email, $name, $subject]) ) {
 				return false;
 			}
 

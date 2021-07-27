@@ -23,3 +23,11 @@
     font-size: 25px;
     margin: 0 0 20px 0;
 }
+
+table.table-wpcf7-entry thead th:first-child {width: 300px;}
+
+table.table-wpcf7-entry tbody th {font-weight: bold; vertical-align: top; padding-top: 10px; max-width: 300px; padding-left: 15px;}
+
+table.table-wpcf7-entry tbody td {vertical-align: middle;}
+
+table.table-wpcf7-entry tbody td p:last-child {margin-bottom: 0;}

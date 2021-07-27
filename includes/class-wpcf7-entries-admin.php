@@ -58,7 +58,7 @@ class WPCF7_Entries_Admin {
 	 */
 	public function admin_enqueue_scripts() {
 		//our plugin screens
-		$plugin_screens = ['contacts_page_wpcf7-entries-settings'];
+		$plugin_screens = ['contacts_page_wpcf7-entries-settings', 'admin_page_wpcf7-entry'];
 
 		//if current screen is not form our plugin then return
 		if ( !in_array(get_current_screen()->id, $plugin_screens)) {
@@ -106,8 +106,12 @@ class WPCF7_Entries_Admin {
 		//hook action for screen opton of entry list page
 		add_action( "load-$entry_list_hook", [$entry_list, 'screen_option' ] );	
 
+
+		require_once WPCF7_ENTRIES_PLUGIN_DIR . '/includes/class-wpcf7-entries-entry.php';
+		$view_entry = new WPCF7_Entries_Entry();
+
 		//Add submenu page for view entry
-		add_submenu_page( null, __('View Entry', 'wpcf7-entries'), __('View Entry', 'wpcf7-entries'), 'manage_options', 'wpcf7-entry', [$entry_list, 'output']);
+		add_submenu_page( null, __('View Entry', 'wpcf7-entries'), __('View Entry', 'wpcf7-entries'), 'manage_options', 'wpcf7-entry', [$view_entry, 'output']);
 	}
 
 }
