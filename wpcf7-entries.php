@@ -30,7 +30,7 @@ require_once dirname( __FILE__ ) . '/includes/class-wpcf7-entries.php';
  * Returns the main instance of Contact Form 7 Entries to prevent the need to use globals.
  *
  * @since  1.0.1
- * @return Contact_Form7_Entries
+ * @return WPCF7_Entries
  */
 function WPCF7_Entries() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName
 	return WPCF7_Entries::instance();
