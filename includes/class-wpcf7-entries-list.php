@@ -24,6 +24,7 @@ class WPCF7_Entries_List  {
 		$this->entry_table = new WPCF7_Entries_Table();
 
 		add_filter( 'set-screen-option', [ __CLASS__, 'set_screen' ], 20, 3 );
+        $this->process_bulk_action();
         $this->export_entries();
 	}
 
@@ -48,11 +49,28 @@ class WPCF7_Entries_List  {
     }
 
     /**
+     * delete entries of current form
+     * @since 1.0.1
+     */    
+    public function process_bulk_action() {
+        if (!wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-' . $this->entry_table->_args['plural'] ) ) {
+            return;
+        }
+
+        global $wpdb;
+
+        if ( $_REQUEST['action'] == 'bulk-delete' && !empty($_REQUEST['entries']) ) {
+            $wpdb->query(sprintf("DELETE entries, entry_fields FROM {$wpdb->prefix}wpcf7_entries entries LEFT JOIN {$wpdb->prefix}wpcf7_entries_fields entry_fields ON entries.ID = entry_fields.entry_id WHERE entries.ID IN (%s)", implode(', ', $_REQUEST['entries'])));
+            exit(wp_safe_redirect(admin_url('admin.php?page=wpcf7-entries&form=' . $_GET['form'])));
+        }
+    }
+
+    /**
 	 * export all emails as a csv file
      * @since  1.0.1
 	 */
     public function export_entries() {
-        if (!wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-' . $this->_args['plural'] ) ) {
+        if (!wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-' . $this->entry_table->_args['plural'] ) ) {
             return;
         }
 

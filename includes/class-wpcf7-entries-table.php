@@ -29,23 +29,6 @@ class WPCF7_Entries_Table extends WP_List_Table {
     }
 
     /**
-     * handle bulk action for table
-     * @since 1.0.1
-     */    
-    public function process_bulk_action() {        
-        if (!wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-' . $this->_args['plural'] ) ) {
-            return;
-        }
-
-        global $wpdb;
-
-        if ( $_REQUEST['action'] == 'bulk-delete' && !empty($_REQUEST['entries']) ) {
-            $wpdb->query(sprintf("DELETE entries, entry_fields FROM {$wpdb->prefix}wpcf7_entries entries LEFT JOIN {$wpdb->prefix}wpcf7_entries_fields entry_fields ON entries.ID = entry_fields.entry_id WHERE entries.ID IN (%s)", implode(', ', $_REQUEST['entries'])));
-            exit(wp_safe_redirect(admin_url('admin.php?page=wpcf7-entries&form=' . $_GET['form'])));
-        }
-    }
-
-    /**
      * add export button at top
      * @since 1.0.1
      */
