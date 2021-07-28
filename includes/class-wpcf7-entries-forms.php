@@ -19,15 +19,24 @@ class WPCF7_Entries_Forms {
 
 	/**
 	 * Constructor.
+     * @since  1.0.1
 	 */
 	public function __construct() {	
 		add_filter( 'set-screen-option', [ __CLASS__, 'set_screen' ], 20, 3 );
 	}
 
+    /**
+	 * set screen option $value.
+     * @since  1.0.1
+	 */
 	public static function set_screen( $status, $option, $value ) {
         return $value;
     }
 
+    /**
+	 * add options for screen setting.
+     * @since  1.0.1
+	 */
 	public function screen_option() {
         add_screen_option( 'per_page', [
             'label' => __('Entry Per Page', 'wpcf7-entries'),
@@ -36,6 +45,10 @@ class WPCF7_Entries_Forms {
         ] );
     }
 
+    /**
+	 * output admin page for showing contact form 7 forms.
+     * @since  1.0.1
+	 */
     public function output() {
 		require_once WPCF7_ENTRIES_PLUGIN_DIR. '/includes/class-wpcf7-forms-table.php';
 		$forms = new WPCF7_Forms_Table();

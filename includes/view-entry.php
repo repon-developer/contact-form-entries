@@ -43,8 +43,8 @@
                                     <div id="misc-publishing-actions">
                                         <div class="misc-pub-section">
                                             <ul style="margin:0">
-                                                <li><label><input type="radio" name="entry_spam" value="1"> Spam</label></li>
-                                                <li><label><input type="radio" name="entry_spam" value="0" checked="checked">Not Spam</label></li>
+                                                <li><label><input type="radio" name="entry_spam" value="1"> <?php _e('Spam', 'wpcf7-entries'); ?></label></li>
+                                                <li><label><input type="radio" name="entry_spam" value="0" checked="checked"><?php _e('Not Spam', 'wpcf7-entries'); ?></label></li>
                                             </ul>                                            
                                         </div>
 
@@ -57,7 +57,7 @@
 
                                 <div id="major-publishing-actions">
                                     <div id="delete-action">                                      
-                                        <a class="submitdelete deletion" href="<?php echo add_query_arg(['delete' => wp_create_nonce($entry_id)]); ?>">Move to Bin</a>
+                                        <a class="submitdelete deletion" href="<?php echo add_query_arg(['delete' => wp_create_nonce($entry_id)]); ?>"><?php _e('Move to Bin', 'wpcf7-entries'); ?></a>
                                     </div>
                                     <div class="clear"></div>
                                 </div>

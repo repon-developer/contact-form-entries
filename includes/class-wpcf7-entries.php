@@ -40,6 +40,7 @@ class WPCF7_Entries {
 
 	/**
 	 * Constructor.
+	 * @since  1.0.1
 	 */
 	public function __construct() {
 		// Includes.
@@ -57,6 +58,7 @@ class WPCF7_Entries {
 
 	/**
 	 * Performs plugin activation steps.
+	 * @since  1.0.1
 	 */
 	public function activate() {
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -87,11 +89,16 @@ class WPCF7_Entries {
 
 	/**
 	 * Loads textdomain for plugin.
+	 * @since  1.0.1
 	 */
 	public function load_plugin_textdomain() {
 		load_plugin_textdomain( 'wpcf7-entries', false, WPCF7_ENTRIES_PLUGIN_DIR . '/languages/' );
 	}
 
+	/**
+	 * save contact form 7 entries after submitting from frontend
+	 * @since  1.0.1
+	 */
 	public function wpcf7_save_entry($contact_form) {
 		global $wpdb;
 

@@ -27,10 +27,18 @@ class WPCF7_Entries_List  {
         $this->export_entries();
 	}
 
+    /**
+	 * set screen option $value.
+     * @since  1.0.1
+	 */
 	public static function set_screen( $status, $option, $value ) {
         return $value;
     }
 
+    /**
+	 * add options for screen setting.
+     * @since  1.0.1
+	 */
 	public function screen_option() {
         add_screen_option( 'per_page', [
             'label' => __('Form Per Page', 'wpcf7-entries'),
@@ -39,6 +47,10 @@ class WPCF7_Entries_List  {
         ] );
     }
 
+    /**
+	 * export all emails as a csv file
+     * @since  1.0.1
+	 */
     public function export_entries() {
         if (!wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-' . $this->_args['plural'] ) ) {
             return;
@@ -70,6 +82,10 @@ class WPCF7_Entries_List  {
         exit;
     }
 
+    /**
+	 * admin page for form entries
+     * @since  1.0.1
+	 */
     public function output() {
         $form = get_post($_GET['form']);
 

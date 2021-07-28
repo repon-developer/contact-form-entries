@@ -27,6 +27,7 @@ class WPCF7_Entries_Entry {
 
 	/**
 	 * Constructor.
+	 * @since  1.0.1
 	 */
 	public function __construct() {
 		if ( empty($_GET['id'])) return;
