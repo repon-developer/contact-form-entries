@@ -14,7 +14,8 @@
                     </thead>
 
                     <tbody>
-                        <?php foreach ($fields as $key => $value) : ?>
+                        <?php foreach ($fields as $key => $value) :
+                            if (empty($value)) continue; ?>
                         <tr>
                             <th><?php echo $key ?></th>
                             <td><?php echo nl2br(stripslashes($value)) ?></td>
