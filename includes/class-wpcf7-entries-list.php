@@ -84,16 +84,23 @@ class WPCF7_Entries_List  {
         if ( !$result ) {
             return;
         }
+
+        array_walk($result, function($item) {
+            unset($item->ID);
+            return $item;
+        });
+
+        $columns = array_keys((array)$result[0]);
                 
         header('Content-Type: text/csv');
         header('Content-Disposition: attachment; filename="entries.csv"');
 
         $output = fopen('php://output', 'wb');
-        fputcsv($output, array('email'));
+        fputcsv($output, $columns);
 
         while ($row = current($result)) {
             next($result);
-            fputcsv($output, array($row->email) );
+            fputcsv($output, (array)$row );
         }
 
         fclose($output);

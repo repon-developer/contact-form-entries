@@ -53,7 +53,6 @@ class WPCF7_Entries {
 
 		//getting the response after sent email
 		add_action('wpcf7_mail_sent', [$this, 'wpcf7_save_entry']);
-		//$this->wpcf7_save_entry('');
 	}
 
 	/**
@@ -73,6 +72,7 @@ class WPCF7_Entries {
 			`email` VARCHAR(100) NULL , 
 			`name` VARCHAR(100) NULL , 
 			`subject` VARCHAR(100) NULL , 
+			`spam` BOOLEAN NOT NULL DEFAULT FALSE, 
 			`submitted_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
 			PRIMARY KEY (`ID`))
 		");

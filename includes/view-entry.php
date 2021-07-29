@@ -41,18 +41,19 @@
                             <div class="submitbox" id="submitpost">
                                 <div id="minor-publishing">
 
-                                    <div id="misc-publishing-actions">
+                                    <form id="misc-publishing-actions" method="post" action="<?php echo add_query_arg() ?>">
+                                        <?php wp_nonce_field('_entry_spam', '_nonce') ?>
                                         <div class="misc-pub-section">
                                             <ul style="margin:0">
-                                                <li><label><input type="radio" name="entry_spam" value="1"> <?php _e('Spam', 'wpcf7-entries'); ?></label></li>
-                                                <li><label><input type="radio" name="entry_spam" value="0" checked="checked"><?php _e('Not Spam', 'wpcf7-entries'); ?></label></li>
+                                                <li><label><input type="radio" name="entry_spam" value="1" <?php checked('1', $spam ) ?>> <?php _e('Spam', 'wpcf7-entries'); ?></label></li>
+                                                <li><label><input type="radio" name="entry_spam" value="0" <?php checked('0', $spam ) ?>><?php _e('Not Spam', 'wpcf7-entries'); ?></label></li>
                                             </ul>                                            
                                         </div>
 
                                         <div class="misc-pub-section curtime misc-pub-curtime">
                                             <span id="timestamp"><?php _e('Submitted on', 'wpcf7-entries'); ?>: <b><?php echo date(get_option( 'date_format'), strtotime($submitted_date)) ?> @ <?php echo date(get_option( 'time_format'), strtotime($submitted_date)) ?></b> </span>
                                         </div>
-                                    </div>
+                                    </form>
                                     <div class="clear"></div>
                                 </div>
 
@@ -61,6 +62,7 @@
                                         <a class="submitdelete deletion" href="<?php echo add_query_arg(['delete' => wp_create_nonce($entry_id)]); ?>"><?php _e('Move to Bin', 'wpcf7-entries'); ?></a>
                                     </div>
                                     <div class="clear"></div>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -72,3 +74,10 @@
         <br class="clear">
     </div>
 </div>
+
+<script type="text/javascript">
+    jQuery('#misc-publishing-actions [name="entry_spam"]').on('change', function() {
+        jQuery(this).closest('form').submit();        
+    });
+    
+</script>

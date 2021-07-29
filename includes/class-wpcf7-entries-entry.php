@@ -31,7 +31,9 @@ class WPCF7_Entries_Entry {
 	 */
 	public function __construct() {
 		if ( empty($_GET['id'])) return;
-
+		
+		$this->handle_spam();
+		
 		global $wpdb;
 		
 		$entry = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}wpcf7_entries WHERE id = " . $_GET['id']);
@@ -41,17 +43,31 @@ class WPCF7_Entries_Entry {
 		
 		$this->form = $entry->form_id;
 		$this->entry_id = $_GET['id'];
-
+		
 		$this->name = $entry->name;
 		$this->email = $entry->email;
 		$this->subject = $entry->subject;
+		$this->spam = $entry->spam;
 		$this->submitted_date = $entry->submitted_date;
-
+		
 		$this->delete();
 	}
 
 	/**
-	 * Hanlde delete a entry of a form.
+	 * mark as a spam or not
+	 * @since 1.0.1
+	 */
+	public function handle_spam() {		
+		if (!wp_verify_nonce($_POST['_nonce'], '_entry_spam') ) {
+			return;
+		}
+
+		global $wpdb;
+		$wpdb->update( $wpdb->prefix  . 'wpcf7_entries', array( 'spam' => $_POST['entry_spam']), array( 'ID' => $_GET['id']));		
+	}
+
+	/**
+	 * Handle delete a entry of a form.
 	 * @since 1.0.1
 	 */
 	public function delete() {		
@@ -97,6 +113,7 @@ class WPCF7_Entries_Entry {
 		$form_id = $this->form;
 		$entry_id = $this->entry_id;
 		$submitted_date = $this->submitted_date;
+		$spam = $this->spam;
 
 		$entry_fields = $wpdb->get_results(sprintf("SELECT * FROM {$wpdb->prefix}wpcf7_entries_fields WHERE entry_id = %d ORDER BY ID", $this->entry_id));
 
