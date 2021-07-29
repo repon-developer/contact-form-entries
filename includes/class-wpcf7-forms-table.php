@@ -16,13 +16,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 
 class WPCF7_Forms_Table extends WP_List_Table {
-    public function get_bulk_actions() {
-        $actions = [
-            'bulk-delete' => __('Delete', 'wpcf7-entries')
-        ];
-
-        return $actions;
-    }
 
     public function get_sortable_columns() {
         return array(

@@ -59,8 +59,15 @@ class WPCF7_Entries_Admin {
 	 * @since  1.0.1
 	 */
 	public function admin_enqueue_scripts() {
+		$menu_name = get_option( 'wpcf7_entries_menu_name');
+		if ( empty($menu_name) ) {
+			$menu_name = __( 'Contacts', 'wpcf7-entries' );
+		}
+
+		$menu_name = sanitize_title( $menu_name );
+
 		//our plugin screens
-		$plugin_screens = ['contacts_page_wpcf7-entries-settings', 'admin_page_wpcf7-entry'];
+		$plugin_screens = [$menu_name . '_page_wpcf7-entries-settings', 'admin_page_wpcf7-entry'];
 
 		//if current screen is not form our plugin then return
 		if ( !in_array(get_current_screen()->id, $plugin_screens)) {
@@ -76,7 +83,7 @@ class WPCF7_Entries_Admin {
 	 * @since  1.0.1
 	 */
 	public function admin_menu() {
-		$menu_name = get_option( 'wpcf7_entries_menu_name');		
+		$menu_name = get_option( 'wpcf7_entries_menu_name');
 		if ( empty($menu_name) ) {
 			$menu_name = __( 'Contacts', 'wpcf7-entries' );
 		}
