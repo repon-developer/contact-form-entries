@@ -85,9 +85,13 @@ class WPCF7_Entries_List  {
             return;
         }
 
-        array_walk($result, function($item) {
+        array_walk($result, function($item) use($wpdb) {            
+            $fields = $wpdb->get_results(sprintf("SELECT * FROM {$wpdb->prefix}wpcf7_entries_fields WHERE entry_id = %s", $item->ID));
+            foreach ($fields as $field) {
+                $item->{$field->field_id} = $field->value;
+            }
+
             unset($item->ID);
-            return $item;
         });
 
         $columns = array_keys((array)$result[0]);
